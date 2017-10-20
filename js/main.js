@@ -1,38 +1,63 @@
 var mainDisplay = [];
 var secondaryDisplay = [];
 var finalAnswer = [];
-
+var operatorCheck = true;
 var buttons = document.getElementsByTagName("button");
-console.log(buttons);
-var temp = buttons[6].innerHTML
+var smlDisplay = document.getElementById('secondary-text');
+var lrgDisplay = document.getElementById('display-text');
+var smlDisplay = document.getElementById('secondary-text');
 
-//document.getElementsByTagName('button').onclick =function(){console.log(butt)}
-for(let i = 0; i < 18; i++){
-	
-	if(Number.isInteger(+buttons[i].innerHTML) === true){
-		buttons[i].addEventListener('click', (function() {
-			mainDisplay.push(buttons[i].innerHTML);
-				mainDisplay = [+mainDisplay.join('')];		
-			document.getElementById('display-text').innerHTML = mainDisplay;
-			
-			
-			console.log(mainDisplay);
-			
-		}));
-			
-	} else if(buttons[i].innerHTML == '+' || buttons[i].innerHTML == '-' || buttons[i].innerHTML == '*' || buttons[i].innerHTML == '/' || buttons[i].innerHTML == '.'){
-			buttons[i].addEventListener('click', (function() {
-				secondaryDisplay.push(+mainDisplay);
-		    }));
-	} else if(buttons[i].innerHTML == 'CE'){
-		buttons[i].addEventListener('click', (function() {
-			mainDisplay = [];
-			document.getElementById('display-text').innerHTML = 0;
-		}));
-	} else if(buttons[i].innerHTML == 'C'){
+	for(let i = 0; i < buttons.length; i++){
 		
-		console.log(buttons[i].innerHTML);
+		if(Number.isInteger(+buttons[i].innerHTML) === true || buttons[i].innerHTML == '.'){
+			buttons[i].addEventListener('click', (function() {
+				mainDisplay.push(buttons[i].innerHTML);
+				mainDisplay = [mainDisplay.join('')];		
+				lrgDisplay.innerHTML = mainDisplay;
+				operatorCheck = true;	
+			}));
+				
+		} else if(buttons[i].innerHTML == '+' || buttons[i].innerHTML == '-' || buttons[i].innerHTML == '*' || buttons[i].innerHTML == '/'){
+			buttons[i].addEventListener('click', (function() {
+				if(operatorCheck === true){
+					mainDisplay.push(buttons[i].innerHTML);
+					secondaryDisplay.push(mainDisplay);
+					mainDisplay = [mainDisplay.join('')];
+					mainDisplay = parseInt(secondaryDisplay);
+					mainDisplay = eval(secondaryDisplay);
+					secondaryDisplay = [secondaryDisplay.join('').replace(/,/g, "")];
+					mainDisplay = [mainDisplay.join('').replace(/,/g, "")];
+					smlDisplay.innerHTML = secondaryDisplay;
+					mainDisplay = [];
+					operatorCheck = false;
+				}
+		    }));
+		} else if(buttons[i].innerHTML == 'CE'){
+			buttons[i].addEventListener('click', (function() {
+				mainDisplay = [];
+				lrgDisplay.innerHTML = 0;
+			}));
+		} else if(buttons[i].innerHTML == 'C'){
+			buttons[i].addEventListener('click', (function() {
+				mainDisplay = [];
+				secondaryDisplay = [];
+				lrgDisplay.innerHTML = 0;
+				smlDisplay.innerHTML = '';
+				operatorCheck = true;
+			}));
+			
+		} else if(buttons[i].innerHTML == '=') {
+			buttons[i].addEventListener('click', (function() {
+				mainDisplay = [eval(secondaryDisplay + mainDisplay)];
+				secondaryDisplay = [];
+				lrgDisplay.innerHTML = mainDisplay;
+				smlDisplay.innerHTML = '';
+			}));
+		}
 	}
 
-}
-
+console.log(buttons);
+	$(document).keyup(function(e) {
+    console.log(e.keyCode);
+    //TODO: Write keycodes
+});
